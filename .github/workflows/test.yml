@@ -1,9 +1,9 @@
 on: [push]
-  jobs:
-    signcheck:
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v4
-        - run: gpg --import .ci/self.asc
-        - run: gpg --import-ownertrust .ci/ownertrust
-        - run: ./.ci/signcheck.sh
+jobs:
+  signcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: gpg --import .ci/self.asc
+      - run: gpg --import-ownertrust .ci/ownertrust
+      - run: ./.ci/signcheck.sh
