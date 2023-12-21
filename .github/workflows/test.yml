@@ -3,7 +3,8 @@ jobs:
   signcheck:
     runs-on: ubuntu-latest
     steps:
-      - uses: ./.github/workflows/checkout-and-keys.yml
+      - uses: actions/checkout@v4
+      - uses: ./.github/workflows/keys.yml
       - run: |
           ./.ci/signcheck.sh
   shellcheck:
@@ -22,7 +23,8 @@ jobs:
     needs: [signcheck, shellcheck]
     runs-on: ubuntu-latest
     steps:
-      - uses: ./.github/workflows/checkout-and-keys.yml
+      - uses: actions/checkout@v4
+      - uses: ./.github/workflows/keys.yml
       - run: |
           ./support/make_installer.sh
       - uses: actions/upload-artifact@v4

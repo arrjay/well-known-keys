@@ -4,7 +4,6 @@ jobs:
   import:
     runs-on: ubuntu-latest
     steps:
-        - uses: actions/checkout@v4
         - run: |
             gpg --import .ci/self.asc
             gpg --import-ownertrust .ci/ownertrust
