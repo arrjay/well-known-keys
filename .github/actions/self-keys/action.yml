@@ -1,0 +1,8 @@
+name: 'Import Self-Signing Keys'
+decription: 'imports the keys used to sign data in the key publishing repo'
+runs:
+  using: "composite"
+  steps:
+    - run: |
+      gpg --import .ci/self.asc
+      gpg --import-ownertrust .ci/ownertrust
