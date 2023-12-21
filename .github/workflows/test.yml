@@ -20,3 +20,17 @@ jobs:
       - uses: sudo-bot/action-shellcheck@latest
         with:
           cli-args: "${{ steps.files.outputs.shfiles }}"
+  artifacts:
+    needs: [signcheck, shellcheck]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          ./support/make_installer.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: installer
+          path: artifacts/install.run
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
