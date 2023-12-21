@@ -49,6 +49,12 @@ jobs:
           path: .
   publish-site:
     needs: [prepare-site]
+    permissions:
+      pages: write
+      id-token: write
+      actions: read
+    environment:
+      name: github-pages
     runs-on: ubuntu-latest
     steps:
       - uses: actions/deploy-pages@v4
