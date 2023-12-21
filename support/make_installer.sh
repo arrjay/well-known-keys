@@ -36,6 +36,6 @@ makeself_extract_dir="$(mktemp -d)"
 "./cache/makeself-${MAKESELF_VER}.run" --target "${makeself_extract_dir}" --keep --noexec
 
 # use git archive to push contents into the workdir. use find to filter out things to not publish.
-# shellcheck tries to think it's clever about the parens (which are for _find_!)
+# Shellcheck tries to think it's clever about the parens (which are for _find_!)
 # shellcheck disable=SC2046
 git archive --format=tar HEAD $(find . -path ./.git -prune -o -path ./support -prune -o -path ./cache -o -path ./.ci -prune -o -path ./signatures -prune -o -path ./.github -prune -o \( -type d -wholename '*/*' \) -print) | tar xvf - -C "${workdir}"
