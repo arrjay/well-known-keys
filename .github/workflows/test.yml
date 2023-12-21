@@ -34,7 +34,7 @@ jobs:
           if-no-files-found: error
           retention-days: 1
           compression-level: 0
-  site:
+  prepare-site:
     needs: [artifacts]
     runs-on: ubuntu-latest
     steps:
@@ -43,5 +43,13 @@ jobs:
           name: installer
       - run: |
           ls
+          chmod +x install.run
           ./install.run changelog > changelog.txt
-#      - uses: actions/deploy-pages@v4
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: .
+  publish-site:
+    needs: [prepare-site]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/deploy-pages@v4
