@@ -38,4 +38,15 @@ makeself_extract_dir="$(mktemp -d)"
 # use git archive to push contents into the workdir. use find to filter out things to not publish.
 # Shellcheck tries to think it's clever about the parens (which are for _find_!)
 # shellcheck disable=SC2046
-git archive --format=tar HEAD $(find . -path ./.git -prune -o -path ./support -prune -o -path ./cache -o -path ./.ci -prune -o -path ./signatures -prune -o -path ./.github -prune -o \( -type d -wholename '*/*' \) -print) | tar xvf - -C "${workdir}"
+git archive --format=tar HEAD $(find . -path ./.git -prune -o -path ./support -prune -o -path ./cache -o -path ./.ci -prune -o -path ./signatures -prune -o -path ./.github -prune -o -path ./artifacts -prune -o \( -type d -wholename '*/*' \) -print) | tar xvf - -C "${workdir}"
+
+# copy the script makeself will run...
+mkdir "${workdir}/support"
+cp support/install_keys.sh "${workdir}/support"
+
+# add the changelog
+git log --show-signature > "${workdir}/changelog.txt"
+
+# create an installer
+commitref="$(git rev-parse --verify HEAD)"
+"${makeself_extract_dir}/makeself.sh" --sha256 "${workdir}" artifacts/install.run "RJ's Well Known Keys - ${commitref}" ./support/install_keys.sh
