@@ -12,7 +12,9 @@ jobs:
     steps:
       - name: find shell files
         id: files
-        run: echo "shfiles=$(find . -iname \*.sh)" >> $GITHUB_OUTPUT
+        run: |
+          - echo "shfiles=$(find . -iname \*.sh)" >> $GITHUB_OUTPUT
+          - cat $GITHUB_OUTPUT
       - uses: actions/checkout@v4
       - uses: sudo-bot/action-shellcheck@latest
         with:
