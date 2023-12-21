@@ -14,8 +14,9 @@ jobs:
       - uses: actions/checkout@v4
       - name: find shell files
         id: files
+        # please never _ever_ check in anything with spaces!
         run: |
-          echo "shfiles=$(find . -iname \*.sh)" >> $GITHUB_OUTPUT
+          echo "shfiles=$(find . -iname \*.sh -printf '%p ')" >> $GITHUB_OUTPUT
       - uses: sudo-bot/action-shellcheck@latest
         with:
           cli-args: "${{ steps.files.outputs.shfiles }}"
