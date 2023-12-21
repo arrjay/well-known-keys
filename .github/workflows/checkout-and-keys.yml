@@ -1,0 +1,10 @@
+# reusable job for installing the validation keys
+on: [workflow_call]
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+        - uses: actions/checkout@v4
+        - run: |
+            gpg --import .ci/self.asc
+            gpg --import-ownertrust .ci/ownertrust

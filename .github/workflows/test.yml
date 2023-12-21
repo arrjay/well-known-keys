@@ -3,10 +3,8 @@ jobs:
   signcheck:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: ./.github/workflows/checkout-and-keys.yml
       - run: |
-          gpg --import .ci/self.asc
-          gpg --import-ownertrust .ci/ownertrust
           ./.ci/signcheck.sh
   shellcheck:
     runs-on: ubuntu-latest
@@ -24,7 +22,7 @@ jobs:
     needs: [signcheck, shellcheck]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: ./.github/workflows/checkout-and-keys.yml
       - run: |
           ./support/make_installer.sh
       - uses: actions/upload-artifact@v4
