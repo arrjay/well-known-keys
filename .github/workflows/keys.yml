@@ -1,5 +1,7 @@
 # reusable job for installing the validation keys
-on: [workflow_call]
+on:
+  workflow_call:
+
 jobs:
   import:
     runs-on: ubuntu-latest
