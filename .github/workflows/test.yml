@@ -4,18 +4,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: gpg --import .ci/self.asc
-      - run: gpg --import-ownertrust .ci/ownertrust
-      - run: ./.ci/signcheck.sh
+      - run: |
+          gpg --import .ci/self.asc
+          gpg --import-ownertrust .ci/ownertrust
+          ./.ci/signcheck.sh
   shellcheck:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: find shell files
         id: files
         run: |
           echo "shfiles=$(find . -iname \*.sh)" >> $GITHUB_OUTPUT
-          cat $GITHUB_OUTPUT
-      - uses: actions/checkout@v4
       - uses: sudo-bot/action-shellcheck@latest
         with:
           cli-args: "${{ steps.files.outputs.shfiles }}"
