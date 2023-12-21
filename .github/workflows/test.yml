@@ -7,3 +7,10 @@ jobs:
       - run: gpg --import .ci/self.asc
       - run: gpg --import-ownertrust .ci/ownertrust
       - run: ./.ci/signcheck.sh
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: sudo-bot/action-shellcheck@latest
+        with:
+          cli-args: "setup.sh .ci/signcheck.sh support/make_installer.sh"
