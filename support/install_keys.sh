@@ -2,6 +2,9 @@
 
 set -eu
 
+# allow for debugging the built assembly
+[[ "${DEBUG_KEY_INSTALLER:-}" ]] && [[ "${DEBUG_KEY_INSTALLER:-}" != "false" ]] && set -x
+
 # when called, find script directory and run everything except ourselves.
 # http://mywiki.wooledge.org/BashFAQ/028
 # I know damn well it gives me only the first element but I'm not sure all versions of bash have this as an _array_
