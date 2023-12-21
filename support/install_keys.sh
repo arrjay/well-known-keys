@@ -55,7 +55,7 @@ _EOF_
   ;;
 esac
 
-[[ "${gpg_keys[1]:-}" ]] && { gpg --check-sigs "${gpg_keys[@]}" ; }
+[[ "${gpg_keys[0]:-}" ]] && { gpg --check-sigs "${gpg_keys[@]}" ; }
 
 # by the time we got here, we should be...fine.
 exit 0
