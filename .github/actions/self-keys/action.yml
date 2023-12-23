@@ -10,5 +10,5 @@ runs:
     - shell: bash
       run: "\"${RUNNER_TEMP}/keys.run\" installersign-ownertrust 5"
     - shell: bash
-      run: gpg --import-ownertrust ./ci/ownertrust
+      run: gpg --import-ownertrust ./.ci/ownertrust
 
