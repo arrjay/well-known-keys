@@ -8,5 +8,5 @@ runs:
     - shell: bash
       run: chmod +x "${RUNNER_TEMP}/keys.run"
     - shell: bash
-      run: "\"${RUNNER_TEMP}/keys.run\" installersign-ownertrust"
+      run: "\"${RUNNER_TEMP}/keys.run\" installersign-ownertrust 5"
 

@@ -40,19 +40,28 @@ install_installergpg () {
 
 install_installertrust () {
   install_installergpg
-  gpg --import-ownertrust "${source_dir}"/gpg/46265C65A19FDBAC1F8EAA14A54EBDAE914521F8.ownertrust || exit 1
+  local level="${1}"
+  local ownertrust
+  read -r ownertrust < "${source_dir}"/gpg/46265C65A19FDBAC1F8EAA14A54EBDAE914521F8.ownertrust
+  [[ "${ownertrust}" ]] || exit 1
+  [[ "${level}" ]] && {
+    ownertrust="${ownertrust%:[1-5]:}"
+    ownertrust="${ownertrust}:${level}:"
+  }
+  gpg --import-ownertrust <<< "${ownertrust}" || exit 1
 }
 
 case "${1:-}" in
   installersign) install_installergpg ;;
-  installersign-ownertrust) install_installertrust ;;
+  installersign-ownertrust) install_installertrust "${2}" ;;
   changelog) cat "${source_dir}/changelog.txt" ;;
   *)
 cat << _EOF_ 1>&2
 please select an action to run
-  installersign            - import the signing key for this installer into gpg
-  installersign-ownertrust - import the owner trust (and key) for this installer into gpg
-  changelog                - show changelog
+  installersign                    - import the signing key for this installer into gpg
+  installersign-ownertrust (level) - import the owner trust (and key) for this installer into gpg.
+                                     optionally force the installer trust to a specific level (1-5)
+  changelog                        - show changelog
 _EOF_
   exit 1
   ;;
