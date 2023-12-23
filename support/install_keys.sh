@@ -45,7 +45,7 @@ install_installertrust () {
   read -r ownertrust < "${source_dir}"/gpg/46265C65A19FDBAC1F8EAA14A54EBDAE914521F8.ownertrust
   [[ "${ownertrust}" ]] || exit 1
   [[ "${level}" ]] && {
-    ownertrust="${ownertrust%:[1-5]:}"
+    ownertrust="${ownertrust%:[1-6]:}"
     ownertrust="${ownertrust}:${level}:"
   }
   gpg --import-ownertrust <<< "${ownertrust}" || exit 1
@@ -60,7 +60,7 @@ cat << _EOF_ 1>&2
 please select an action to run
   installersign                    - import the signing key for this installer into gpg
   installersign-ownertrust (level) - import the owner trust (and key) for this installer into gpg.
-                                     optionally force the installer trust to a specific level (1-5)
+                                     optionally force the installer trust to a specific level (1-6)
   changelog                        - show changelog
 _EOF_
   exit 1
