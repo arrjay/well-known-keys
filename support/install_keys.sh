@@ -51,17 +51,69 @@ install_installertrust () {
   gpg --import-ownertrust <<< "${ownertrust}" || exit 1
 }
 
+get_gpgfiles () {
+  local path="${1}" ext="${2}"
+  ext="${ext#.}"
+  local target="${source_dir}/gpg/${path}"
+  [[ -d "${target}" ]] || return 1
+  # return the base file names of stuff found
+  local candidates name res
+  # grab the base file names
+  { cd "${target}" && candidates=(*."${ext}") ; }
+  for name in "${candidates[@]}" ; do
+    [[ -f "${target}/${name}" ]] || continue
+    res=("${res[@]}" "${name%."${ext}"}")
+  done
+  printf '%s\n' "${res[@]}"
+}
+
+install_projectgpg () {
+  local project="${1}"
+  local handles grip
+  # get the file names we're gonna work on
+  handles="$(get_gpgfiles "project/${project}" .asc)" || exit 1
+  [[ "${handles[0]:-}" ]] || exit 1
+  check_gpg
+  for grip in "${handles[@]}" ; do
+    gpg --import "${source_dir}/gpg/project/${project}/${grip}.asc" || exit 1
+    gpg_keys=("${gpg_keys[@]}" "${grip}")
+  done
+}
+
+install_projecttrust () {
+  local project="${1}"
+  local level="${2:-}"
+  local grip ownertrust otfile
+  install_projectgpg "${project}" || exit 1
+  handles="$(get_gpgfiles "project/${project}" .ownertrust)" || exit 1
+  [[ "${handles[0]:-}" ]] || exit 1
+  for grip in "${handles[@]}" ; do
+    otfile="${source_dir}/gpg/project/${project}/${grip}.ownertrust"
+    [[ -f "${otfile}" ]] || continue
+    read -r ownertrust < "${otfile}"
+    [[ "${ownertrust}" ]] || return 1
+    [[ "${level}" ]] && {
+      ownertrust="${ownertrust%:[1-6]:}"
+      ownertrust="${ownertrust}:${level}:"
+    }
+  done
+}
+
 case "${1:-}" in
-  installersign) install_installergpg ;;
+  installersign)            install_installergpg ;;
   installersign-ownertrust) install_installertrust "${2}" ;;
-  changelog) cat "${source_dir}/changelog.txt" ;;
+  gpg-projectkeys)          shift ; install_projectgpg "${@}" ;;
+  gpg-projecttrust)         shift ; install_projecttrust "${@}" ;;
+  changelog)                cat "${source_dir}/changelog.txt" ;;
   *)
 cat << _EOF_ 1>&2
 please select an action to run
-  installersign                    - import the signing key for this installer into gpg
-  installersign-ownertrust (level) - import the owner trust (and key) for this installer into gpg.
-                                     optionally force the installer trust to a specific level (1-6)
-  changelog                        - show changelog
+  installersign                      - import the signing key for this installer into gpg
+  installersign-ownertrust (level)   - import the owner trust (and key) for this installer into gpg.
+                                       optionally force the installer trust to a specific level (1-6)
+  gpg-projectkeys (project)          - import signing keys for a project
+  gpg-projecttrust (project) (level) - import owner trust (and keys) for a project
+  changelog                          - show changelog
 _EOF_
   exit 1
   ;;
