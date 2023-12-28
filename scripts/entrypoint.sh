@@ -99,11 +99,20 @@ install_projecttrust () {
   done
 }
 
+git_signcheck () {
+  local checkdir="${1:-}"
+  [[ "${checkdir:-}" ]] || checkdir="${USER_PWD:-}"
+  [[ "${checkdir}" ]] || { err_msg "cannot find user working directory for check" ; exit 2 ; }
+  [[ -x "${source_dir}/scripts/git-signcheck.sh" ]] || { err_msg "cannot find git/gpg check script in archive" ; exit 2 ; }
+  { cd "${checkdir}" && "${source_dir}/scripts/git-signcheck.sh" ; }
+}
+
 case "${1:-}" in
   installersign)            install_installergpg ;;
   installersign-ownertrust) install_installertrust "${2}" ;;
   gpg-projectkeys)          shift ; install_projectgpg "${@}" ;;
   gpg-projecttrust)         shift ; install_projecttrust "${@}" ;;
+  git-signcheck)            shift ; git_signcheck "${@}" ;;
   changelog)                cat "${source_dir}/changelog.txt" ;;
   *)
 cat << _EOF_ 1>&2
