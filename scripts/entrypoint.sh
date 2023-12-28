@@ -103,17 +103,17 @@ git_signcheck () {
   local checkdir="${1:-}"
   [[ "${checkdir:-}" ]] || checkdir="${USER_PWD:-}"
   [[ "${checkdir}" ]] || { err_msg "cannot find user working directory for check" ; exit 2 ; }
-  [[ -x "${source_dir}/scripts/git-signcheck.sh" ]] || { err_msg "cannot find git/gpg check script in archive" ; exit 2 ; }
-  { cd "${checkdir}" && "${source_dir}/scripts/git-signcheck.sh" ; }
+  [[ -x "${source_dir}/scripts/git-sigcheck.sh" ]] || { err_msg "cannot find git/gpg check script in archive" ; exit 2 ; }
+  { cd "${checkdir}" && "${source_dir}/scripts/git-sigcheck.sh" ; }
 }
 
 case "${1:-}" in
-  installersign)            install_installergpg ;;
-  installersign-ownertrust) install_installertrust "${2}" ;;
-  gpg-projectkeys)          shift ; install_projectgpg "${@}" ;;
-  gpg-projecttrust)         shift ; install_projecttrust "${@}" ;;
-  git-signcheck)            shift ; git_signcheck "${@}" ;;
-  changelog)                cat "${source_dir}/changelog.txt" ;;
+  installersign)              install_installergpg ;;
+  installersign-ownertrust)   install_installertrust "${2}" ;;
+  gpg-projectkeys)            shift ; install_projectgpg "${@}" ;;
+  gpg-projecttrust)           shift ; install_projecttrust "${@}" ;;
+  git-signcheck|git-sigcheck) shift ; git_signcheck "${@}" ;;
+  changelog)                  cat "${source_dir}/changelog.txt" ;;
   *)
 cat << _EOF_ 1>&2
 please select an action to run
@@ -122,6 +122,8 @@ please select an action to run
                                        optionally force the installer trust to a specific level (1-6)
   gpg-projectkeys (project)          - import signing keys for a project
   gpg-projecttrust (project) (level) - import owner trust (and keys) for a project
+  git-signcheck (directory)          - check commits in a git checkout for GPG signatures in (directory)
+                                       (this uses your local git/keying)
   changelog                          - show changelog
 _EOF_
   exit 1
