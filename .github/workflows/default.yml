@@ -7,8 +7,7 @@ jobs:
         with:
           fetch-depth: 0
       - uses: ./.github/actions/self-keys
-      - run: |
-          ./scripts/git-sigcheck.sh
+      - uses: ./.github/actions/gpg-git-signcheck
   shellcheck:
     runs-on: ubuntu-latest
     steps:

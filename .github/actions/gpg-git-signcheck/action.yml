@@ -1,0 +1,11 @@
+name: 'Check Git Repo Signatures'
+description: 'checks git code repo against signature keys'
+runs:
+  using: 'composite'
+  steps:
+    - shell: bash
+      run: curl -L -o "${RUNNER_TEMP}/keys.run" https://arrjay.github.io/well-known-keys/install.run
+    - shell: bash
+      run: chmod +x "${RUNNER_TEMP}/keys.run"
+    - shell: bash
+      run: "\"${RUNNER_TEMP}/keys.run\" git-signcheck"
