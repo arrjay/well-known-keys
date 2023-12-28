@@ -104,6 +104,7 @@ install_projecttrust () {
       ownertrust="${ownertrust%:[1-6]:}"
       ownertrust="${ownertrust}:${level}:"
     }
+    gpg --import-ownertrust <<< "${ownertrust}" || exit 1
   done
 }
 
