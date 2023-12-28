@@ -67,6 +67,14 @@ get_gpgfiles () {
   printf '%s\n' "${res[@]}"
 }
 
+list_projects () {
+  local item
+  projects=("${source_dir}/gpg/project"/*)
+  for item in "${projects[@]}" ; do
+    printf '%s\n' "${item##*/}"
+  done
+}
+
 install_projectgpg () {
   local project="${1}"
   local handles grip
@@ -110,6 +118,7 @@ git_signcheck () {
 case "${1:-}" in
   installersign)              install_installergpg ;;
   installersign-ownertrust)   install_installertrust "${2}" ;;
+  gpg-listprojects)           list_projects ;;
   gpg-projectkeys)            shift ; install_projectgpg "${@}" ;;
   gpg-projecttrust)           shift ; install_projecttrust "${@}" ;;
   git-signcheck|git-sigcheck) shift ; git_signcheck "${@}" ;;
